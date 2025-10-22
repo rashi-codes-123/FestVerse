@@ -43,18 +43,17 @@
   <script src="./confetti.js"></script>
   <script src="./app.js"></script>
   <script>
-    document.getElementById("previewCard").onclick = () => {
-  const u = new URL(location.origin + "./card.html");
-  u.searchParams.set("theme", "newyear");
-  u.searchParams.set("msg", "Happy New Year");
-  u.searchParams.set("sub", "Wishing you peace, health, and new beginnings.");
-  const nameEl = document.getElementById("sender") || document.getElementById("from");
-  const from = nameEl ? (nameEl.textContent || "").trim() : "";
-  if (from) u.searchParams.set("from", from);
-
-  u.searchParams.set("view", "card");
-  window.open(u.toString(), "_blank", "noopener");
-};
+    document.getElementById("previewCard")?.addEventListener("click", () => {
+    const u = new URL("card.html", location.href); // relative path for GitHub Pages
+    u.searchParams.set("theme", "newyear");
+    u.searchParams.set("msg", "Happy New Year");
+    u.searchParams.set("sub", "Wishing you peace, health, and new beginnings.");
+    const nameEl = document.getElementById("sender") || document.getElementById("from");
+    const from = nameEl ? (nameEl.textContent || "").trim() : "";
+    if (from) u.searchParams.set("from", from);
+    u.searchParams.set("view", "card");
+    window.open(u.toString(), "_blank", "noopener");
+  });
   </script>
 </body>
 </html>
