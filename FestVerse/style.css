@@ -1,0 +1,259 @@
+/* 1) THEME VARIABLES (easy to customize) */
+:root {
+  --bg-top: #0f172a;        /* deep navy (top of gradient) */
+  --bg-bottom: #1e293b;     /* slate (bottom of gradient) */
+  --text: #ffffff;
+  --muted: rgba(255,255,255,.85);
+
+  --glass: rgba(255,255,255,.08);
+  --glass-2: rgba(255,255,255,.03);
+
+  --primary-1: #fde68a;     /* warm gold top */
+  --primary-2: #fbbf24;     /* warm gold bottom */
+  --secondary-1: #a5b4fc;   /* indigo top */
+  --secondary-2: #60a5fa;   /* blue bottom */
+}
+
+/* 2) GLOBAL RESET & BASE TYPOGRAPHY */
+* { box-sizing: border-box; }
+html, body { height: 100%; }
+html { scroll-behavior: smooth; }
+body {
+  margin: 0;
+  color: var(--text);
+  font-family: system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif;
+  background:
+    radial-gradient(1000px 500px at 20% -10%, #111827 0, transparent 60%),
+    radial-gradient(1200px 600px at 70% -10%, #1f2937 0, transparent 60%),
+    linear-gradient(180deg, var(--bg-top), var(--bg-bottom));
+  /* Layout: center page content with some breathing room */
+  min-height: 100%;
+}
+
+h1, h2, h3 { margin: 0 0 .4rem; }
+p { margin: .3rem 0 .9rem; color: var(--muted); line-height: 1.5; }
+
+/* 3) TOP NAVIGATION (reused on all pages) */
+.nav {
+  position: sticky; top: 0; z-index: 10;
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 12px 18px;
+  background: rgba(0,0,0,.35);
+  backdrop-filter: blur(6px);
+}
+.nav a {
+  color: var(--text);
+  text-decoration: none;
+  margin-left: 14px;
+  font-weight: 500;
+}
+.nav a:hover, .nav a:focus { text-decoration: underline; }
+.brand { font-weight: 700; letter-spacing: .3px; }
+
+/* 4) LAYOUT WRAPPERS */
+.home, .page {
+  width: min(1000px, 92%);
+  margin: 28px auto;
+}
+
+/* 5) HOME (index.html) — hero + cards */
+.hero h1 {
+  font-size: clamp(1.8rem, 3vw + 1rem, 3rem);
+}
+.hero p { max-width: 60ch; }
+
+.cards {
+  margin-top: 18px;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 16px;
+}
+.card {
+  display: block;
+  background: linear-gradient(180deg, var(--glass), var(--glass-2));
+  border: 1px solid rgba(255,255,255,.1);
+  border-radius: 16px;
+  padding: 20px;
+  color: var(--text);
+  text-decoration: none;
+  box-shadow: 0 8px 26px rgba(0,0,0,.3);
+  transition: transform .2s ease, box-shadow .2s ease, border-color .2s ease;
+}
+.card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 12px 32px rgba(0,0,0,.35);
+  border-color: rgba(255,255,255,.18);
+}
+.card h2 { font-size: 1.4rem; }
+
+/* 6) GREETING PAGES (diwali/newyear) */
+.greeting {
+  background: linear-gradient(180deg, var(--glass), var(--glass-2));
+  border: 1px solid rgba(255,255,255,.1);
+  border-radius: 20px;
+  padding: 24px;
+  box-shadow: 0 10px 40px rgba(0,0,0,.35);
+  text-align: center;
+}
+.greeting h1 {
+  font-size: clamp(2rem, 4vw + 1rem, 3rem);
+}
+.explainer {
+  max-width: 65ch;
+  margin: 8px auto 18px;
+}
+.actions {
+  display: flex; gap: 10px; justify-content: center; flex-wrap: wrap;
+  margin-top: 12px;
+}
+
+/* 7) BUTTONS (primary / secondary / ghost) */
+button {
+  padding: 12px 16px;
+  border: none;
+  border-radius: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: transform .12s ease, box-shadow .12s ease, filter .12s ease;
+}
+button:active { transform: translateY(1px) scale(0.99); }
+
+.primary {
+  color: #0b1020;
+  background: linear-gradient(180deg, var(--primary-1), var(--primary-2));
+  box-shadow: 0 8px 20px rgba(251,191,36,.35);
+}
+.primary:hover { filter: brightness(1.05); }
+
+.secondary {
+  color: #071126;
+  background: linear-gradient(180deg, var(--secondary-1), var(--secondary-2));
+  box-shadow: 0 8px 20px rgba(37,99,235,.35);
+}
+.secondary:hover { filter: brightness(1.05); }
+
+.hero {
+  background: linear-gradient(180deg, rgba(255, 221, 87, 0.1), rgba(123, 44, 191, 0.15));
+  padding: 50px 20px;
+  border-radius: 16px;
+}
+
+.ghost {
+  color: var(--text);
+  background: transparent;
+  border: 1px solid rgba(255,255,255,.25);
+}
+.ghost:hover { background: rgba(255,255,255,.06); }
+
+.card:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 8px 20px rgba(255, 215, 0, 0.2);
+  transition: all 0.3s ease;
+}
+
+footer {
+ text-align: center;
+  padding: 12px 0 20px;
+  font-size: 0.9rem;
+  color: #ccc;
+  border-top: 1px solid rgba(255,255,255,0.1);
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  background: rgba(21, 21, 37, 0.9);
+  backdrop-filter: blur(10px);
+}
+
+/* 8) SIGNATURE LINE (only shows after personalization) */
+.signature {
+  margin-top: 10px;
+  font-style: italic;
+  color: var(--muted);
+}
+
+/* 9) DIWALI — DIYA SCENE */
+.scene {
+  display: grid; place-items: center; gap: 10px;
+  margin: 10px auto 6px;
+}
+
+.diya {
+  /* Placeholder diya bowl; replace with an <img> or <svg> if you want later */
+  width: 140px; height: 80px;
+  background: radial-gradient(80px 40px at 50% 10%, #90510e 0, #9f5510 60%);
+  border-radius: 80px 80px 18px 18px / 60px 60px 18px 18px;
+  position: relative;
+  box-shadow: 0 10px 30px rgba(101, 60, 2, 0.45) inset, 0 18px 48px rgba(77, 51, 5, 0.35);
+  border: 1px solid rgba(231, 120, 16, 0.08);
+}
+
+/* “Flame” using a pseudo-element; hidden until lit */
+.diya::before {
+  content: "";
+  position: absolute;
+  left: 50%; transform: translateX(-50%);
+  bottom: 52px;  /* above the bowl */
+  width: 18px; height: 36px;
+  background: radial-gradient(closest-side, #ffd27a, #ff8c3a 65%, transparent 70%);
+  border-radius: 50% 50% 50% 50% / 70% 70% 30% 30%;
+  opacity: 0;
+  filter: blur(0.2px);
+  transition: opacity .25s ease;
+}
+
+/* Glow halo when lit */
+.diya.lit::after {
+  content: "";
+  position: absolute;
+  left: 50%; transform: translateX(-50%);
+  bottom: 40px;
+  width: 140px; height: 140px;
+  background: radial-gradient(circle, rgba(255,215,128,.5), rgba(255,215,128,0) 60%);
+  opacity: .9;
+  filter: blur(4px);
+  pointer-events: none;
+}
+
+/* Only show the flame when lit */
+.diya.lit::before { opacity: 1; }
+
+/* 10) NEW YEAR — CONFETTI CANVAS OVERLAY */
+.sky, #confetti {
+  position: fixed; inset: 0;
+  pointer-events: none;   /* clicks go through to buttons */
+  z-index: 1;             /* on top of the background */
+}
+
+/* 11) ABOUT PAGE */
+.about {
+  max-width: 70ch;
+}
+
+/* 12) ACCESSIBILITY: REDUCED MOTION SUPPORT
+   If user prefers reduced motion, we turn off big transitions/animations. */
+@media (prefers-reduced-motion: reduce) {
+  * { transition: none !important; animation: none !important; }
+  .diya.lit::after { display: none; }  /* remove big glow */
+}
+
+
+
+/* 13) RESPONSIVE TWEAKS FOR SMALL SCREENS */
+@media (max-width: 480px) {
+  .nav { padding: 10px 12px; }
+  .nav a { margin-left: 10px; }
+  .greeting { padding: 18px; }
+  .diya { width: 120px; height: 70px; }
+}
+
+/* 14) UTILITY HELPERS */
+.hidden { display: none !important; }
+.center { text-align: center; }
+
+/* for scrolling */
+body { min-height: 120dvh; overflow-y: auto; }
+
+@supports (height: 100svh) {
+  body { min-height: 120svh; }
+}

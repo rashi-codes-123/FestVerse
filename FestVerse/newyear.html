@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1.0">
+  <title>✨ FestVerse ✨ | New Year</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+
+<body data-page="newyear">
+  <!-- Navigation Bar -->
+  <header class="nav">
+    <a class="brand" href="index.html">✨ FestVerse ✨</a>
+    <nav>
+      <a href="diwali.html">Diwali</a>
+      <a href="newyear.html">New Year</a>
+      <a href="about.html">About</a>
+    </nav>
+  </header>
+
+  <canvas id="confetti" class="sky"></canvas>
+
+  <main class="page">
+    <section class="greeting">
+      <h1>Happy New Year 🎆</h1>
+      
+      <p class="explainer">
+        The New Year marks new beginnings, reflection, and hope for the year ahead — a celebration shared across cultures.
+      </p>
+
+      <button id="celebrate" class="primary">Celebrate 🎉</button>
+
+      <p id="signature" class="signature" hidden>— From <span id="sender">Friend</span></p>
+
+      <div class="actions">
+        <button id="personalize" class="ghost">Personalize</button>
+        <button id="share" class="secondary">Share</button>
+        <button id="previewCard" class="ghost">Preview</button>
+      </div>
+    </section>
+  </main>
+
+  <script src="confetti.js"></script>
+  <script src="app.js"></script>
+  <script>
+    document.getElementById("previewCard").onclick = () => {
+  const u = new URL(location.origin + "/card.html");
+  u.searchParams.set("theme", "newyear");
+  u.searchParams.set("msg", "Happy New Year");
+  u.searchParams.set("sub", "Wishing you peace, health, and new beginnings.");
+  const nameEl = document.getElementById("sender") || document.getElementById("from");
+  const from = nameEl ? (nameEl.textContent || "").trim() : "";
+  if (from) u.searchParams.set("from", from);
+
+  u.searchParams.set("view", "card");
+  window.open(u.toString(), "_blank", "noopener");
+};
+  </script>
+</body>
+</html>

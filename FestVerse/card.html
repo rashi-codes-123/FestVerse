@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>FestVerse Card</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&family=Great+Vibes&display=swap" rel="stylesheet">
+
+<style>
+  :root{
+    /* defaults (Diwali vibe) */
+    --bg1:#1a1530; --bg2:#0f1324; --accent:#ffd36b; --text:#ffffffcc;
+    --title:#fff;  --chip:#ffbf2e;
+  }
+  html,body{height:100%;margin:0}
+  body{
+    display:grid;place-items:center;font-family:Inter,system-ui,Arial,sans-serif;
+    color:var(--text);
+    background:
+      radial-gradient(900px 500px at 15% -10%, #2c1f57 0, transparent 60%),
+      radial-gradient(900px 600px at 85% -10%, #1f2650 0, transparent 60%),
+      linear-gradient(180deg, var(--bg1), var(--bg2));
+  }
+  .card{
+    width:min(92vw,720px);
+    background:rgba(255,255,255,0.06);
+    border:1px solid rgba(255,255,255,0.14);
+    border-radius:20px;
+    box-shadow:0 18px 50px rgba(0,0,0,.45);
+    padding:24px 20px 16px;
+    text-align:center;
+    position:relative;
+    z-index:1; /* above backgrounds */
+  }
+  h1{
+    margin:6px 0 6px;
+    color:var(--title);
+    font-family:"Great Vibes", cursive;
+    font-weight:600;
+    font-size:clamp(2.4rem, 4.5vw, 4rem);
+    letter-spacing:.5px;
+  }
+  .sub{max-width:60ch;margin:6px auto 10px;line-height:1.6}
+  .sig{margin-top:10px;font-style:italic;opacity:.9}
+  .actions{display:flex;gap:10px;justify-content:center;margin-top:12px}
+  button{
+    padding:10px 14px;border:0;border-radius:12px;cursor:pointer;font-weight:700;
+    background:linear-gradient(180deg,#ffe39d,var(--chip));color:#1a1420;
+    box-shadow:0 10px 20px rgba(255,191,46,.35);
+  }
+  .ghost{background:transparent;color:#fff;border:1px solid rgba(255,255,255,.25);box-shadow:none}
+
+  /* hide buttons for recipients */
+  .card-view .actions{display:none}
+
+  /* print: only the card on a white page, centered */
+  @media print{
+    body{background:#fff}
+    .card{box-shadow:none;border:1px solid #ddd}
+    .actions{display:none !important}
+  }
+
+  /* ---------- Artwork container ---------- */
+  .art{ display:flex; justify-content:center; align-items:center; margin-top:8px; }
+  .art svg{ width:140px; height:auto; }
+
+  /* Diya flame flicker */
+  .flame{ transform-origin:50% 100%; animation:flick .9s ease-in-out infinite; }
+  @keyframes flick{ 0%,100%{ transform:scaleY(1) translateY(0) } 50%{ transform:scaleY(1.08) translateY(-1px) } }
+
+  /* Fireworks pulse (subtle, layered circles) */
+  .burst{ animation: boom 2.4s ease-out infinite; opacity:.9 }
+  .burst:nth-child(2){ animation-delay:.6s }
+  .burst:nth-child(3){ animation-delay:1.2s }
+  @keyframes boom{
+    0%{ transform:scale(.2); opacity:.0 }
+    20%{ opacity:1 }
+    80%{ transform:scale(1); opacity:.2 }
+    100%{ opacity:0 }
+  }
+
+  /* Ambient sparkles behind card */
+  .bg-sparkles{
+    position: fixed; inset: 0; pointer-events:none; z-index: 0;
+    background-image:
+      radial-gradient(2px 2px at 12% 22%, rgba(255,255,255,.22), transparent),
+      radial-gradient(2px 2px at 66% 8%, rgba(255,255,255,.18), transparent),
+      radial-gradient(1.5px 1.5px at 84% 28%, rgba(255,255,255,.15), transparent),
+      radial-gradient(1.5px 1.5px at 30% 70%, rgba(255,255,255,.16), transparent),
+      radial-gradient(2px 2px at 72% 78%, rgba(255,255,255,.2), transparent);
+    animation: drift 18s linear infinite;
+    opacity:.5;
+  }
+  @keyframes drift{
+    0%{ transform:translateY(0) }
+    100%{ transform:translateY(-40px) }
+  }
+
+  /* ---------- New Year confetti layer (no canvas) ---------- */
+  .confetti{
+    position: fixed; inset: 0; pointer-events: none; z-index: 0; overflow: hidden;
+  }
+  .confetti i{
+    position:absolute; width:6px; height:10px; border-radius:2px;
+    opacity:.95; animation: fall linear infinite;
+  }
+  @keyframes fall{
+    from { transform: translateY(-10vh) rotate(0deg); }
+    to   { transform: translateY(110vh) rotate(360deg); }
+  }
+</style>
+</head>
+<body>
+  <!-- subtle animated sparkle background -->
+  <div class="bg-sparkles"></div>
+  <!-- New Year confetti layer (inserted by JS when theme=newyear) -->
+  <div class="confetti" id="confetti"></div>
+
+  <div class="card" id="card">
+    <div id="art" class="art" aria-hidden="true"></div>
+
+    <h1 id="title">Happy Diwali</h1>
+    <p class="sub" id="sub">May light, joy and kindness fill your home. Wishing you a bright and prosperous year.</p>
+    <p class="sig" id="sig" hidden>— <span id="from"></span></p>
+
+    <div class="actions">
+  <button id="addName">Add your name</button>
+  <button id="share">Share</button>
+  <button id="preview" class="ghost">Preview</button>  <!-- added -->
+  <button class="ghost" id="pdf">Download PDF</button>
+</div>
+  </div>
+
+<script>
+  /* ---------- 1) SVG helpers (diya / fireworks) ---------- */
+  function renderDiyaSVG(){
+    return `
+    <svg viewBox="0 0 200 150" role="img" aria-label="Diya">
+      <defs>
+        <radialGradient id="flameGrad" cx="50%" cy="35%">
+          <stop offset="0%"  stop-color="#ffe7a1"/>
+          <stop offset="60%" stop-color="#ffb347"/>
+          <stop offset="100%" stop-color="rgba(255,140,58,0)"/>
+        </radialGradient>
+        <linearGradient id="bowlGrad" x1="0" x2="0" y1="0" y2="1">
+          <stop offset="0%" stop-color="#3a2a24"/>
+          <stop offset="100%" stop-color="#231712"/>
+        </linearGradient>
+        <radialGradient id="glow" cx="50%" cy="45%">
+          <stop offset="0%" stop-color="rgba(255,211,107,.55)"/>
+          <stop offset="70%" stop-color="rgba(255,140,58,.15)"/>
+          <stop offset="100%" stop-color="transparent"/>
+        </radialGradient>
+      </defs>
+
+      <!-- soft halo -->
+      <ellipse cx="100" cy="35" rx="70" ry="28" fill="url(#glow)" />
+
+      <!-- bowl -->
+      <path d="M40,95 Q100,135 160,95 Q158,128 100,128 Q42,128 40,95 Z"
+            fill="url(#bowlGrad)" />
+
+      <!-- oil surface -->
+      <ellipse cx="100" cy="95" rx="60" ry="20" fill="#2b1f1a" opacity=".9"/>
+
+      <!-- flame -->
+      <ellipse class="flame" cx="100" cy="70" rx="10" ry="22" fill="url(#flameGrad)"/>
+    </svg>`;
+  }
+
+  function renderFireworksSVG(){
+    return `
+    <svg viewBox="0 0 200 150" role="img" aria-label="Fireworks">
+      <defs>
+        <radialGradient id="fw" cx="50%" cy="50%">
+          <stop offset="0%" stop-color="#ffffff"/>
+          <stop offset="60%" stop-color="#9ad1ff"/>
+          <stop offset="100%" stop-color="rgba(154,209,255,0)"/>
+        </radialGradient>
+      </defs>
+      <g transform="translate(100,75)">
+        <circle class="burst" r="10" fill="url(#fw)"></circle>
+        <circle class="burst" r="18" fill="url(#fw)"></circle>
+        <circle class="burst" r="26" fill="url(#fw)"></circle>
+      </g>
+    </svg>`;
+  }
+
+  /* ---------- 2) Read params ---------- */
+  const P = new URLSearchParams(location.search);
+  const theme = (P.get("theme") || "diwali").toLowerCase();
+  const msg   = P.get("msg") || (theme==="newyear" ? "Happy New Year" : "Happy Diwali");
+  const sub   = P.get("sub") || (theme==="newyear"
+                  ? "Wishing you peace, health, and new beginnings."
+                  : "May light, joy and kindness fill your home.");
+  const from  = P.get("from") || "";
+  const view  = P.get("view") || "";
+
+  /* ---------- 3) Apply theme + artwork ---------- */
+  const root = document.documentElement.style;
+  const art  = document.getElementById("art");
+
+  if (theme === "newyear") {
+    root.setProperty("--bg1", "#0c1224");
+    root.setProperty("--bg2", "#060814");
+    root.setProperty("--accent", "#9ad1ff");
+    root.setProperty("--chip", "#9ad1ff");
+    art.innerHTML = renderFireworksSVG();
+  } else {
+    // default: diwali
+    art.innerHTML = renderDiyaSVG();
+  }
+
+  /* ---------- 4) Apply text ---------- */
+  title.textContent = msg;
+  document.getElementById("sub").textContent = sub;
+  if (from) { document.getElementById("from").textContent = from; sig.hidden = false; }
+
+  /* ---------- 5) Hide actions for recipients ---------- */
+  if (view === "card") document.body.classList.add("card-view");
+
+  /* ---------- 6) New Year confetti (no canvas) ---------- */
+  (function setupConfetti(){
+    if (theme !== "newyear") return;
+
+    const prefersReduced = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    if (prefersReduced) return;
+
+    const layer = document.getElementById("confetti");
+    if (!layer) return;
+
+    const colors = ["#ffd36b","#ff6f61","#9ad1ff","#7b2cbf","#52e3c2","#ffffff"];
+    const count = 90; // light on CPU
+
+    for (let i = 0; i < count; i++) {
+      const piece = document.createElement("i");
+      piece.style.left = Math.random()*100 + "%";
+      const sz = 4 + Math.random()*6;
+      piece.style.width = sz + "px";
+      piece.style.height = (sz*1.6) + "px";
+      piece.style.background = colors[i % colors.length];
+      const dur = 4 + Math.random()*5;
+      piece.style.animationDuration = dur + "s";
+      piece.style.animationDelay = (-Math.random()*dur) + "s";
+      piece.style.transform = `translateY(${-Math.random()*100}vh) rotate(${Math.random()*360}deg)`;
+      layer.appendChild(piece);
+    }
+  })();
+
+  /* ---------- 7) Add-name + Share + PDF ---------- */
+  addName.onclick = () => {
+    const n = prompt("Your name (optional):")?.trim();
+    if (!n) return;
+    document.getElementById("from").textContent = n;
+    sig.hidden = false;
+    P.set("from", n);
+    history.replaceState({}, "", location.pathname + "?" + P.toString());
+  };
+
+  share.onclick = async () => {
+    P.set("view", "card");
+    const url = location.origin + location.pathname + "?" + P.toString();
+    const data = { title: msg, text: "A greeting card for you", url };
+    if (navigator.share && (!navigator.canShare || navigator.canShare(data))) {
+      try { await navigator.share(data); } catch {}
+    } else if (navigator.clipboard && window.isSecureContext) {
+      await navigator.clipboard.writeText(url);
+      alert("Link copied!");
+    } else {
+      prompt("Copy this link:", url);
+    }
+  };
+  
+
+  // simplest PDF: print dialog (works everywhere)
+  preview.onclick = () => {
+  const P2 = new URLSearchParams(P.toString());
+  P2.set("view", "card"); // hide controls in preview
+  const url = location.origin + location.pathname + "?" + P2.toString();
+  window.open(url, "_blank", "noopener");
+};
+  pdf.onclick = () => window.print();
+</script>
+</body>
+</html>
