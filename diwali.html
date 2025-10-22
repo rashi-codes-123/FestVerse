@@ -43,19 +43,19 @@
 
   <script src="./app.js"> </script>
 <script>
-  document.getElementById("previewCard").onclick = () => {
-  const u = new URL(location.origin + "/card.html");
-  u.searchParams.set("theme", "diwali");
-  u.searchParams.set("msg", "Happy Diwali");
-  u.searchParams.set("sub", "May light, joy and kindness fill your home.");
-  // if you display a name on this page and want to pass it through:
-  const nameEl = document.getElementById("sender") || document.getElementById("from");
-  const from = nameEl ? (nameEl.textContent || "").trim() : "";
-  if (from) u.searchParams.set("from", from);
-
-  u.searchParams.set("view", "card"); // hide controls in preview
-  window.open(u.toString(), "_blank", "noopener");
-};
+ // Preview (Diwali)
+  document.getElementById("previewCard")?.addEventListener("click", () => {
+    const u = new URL("card.html", location.href); // relative path for GitHub Pages
+    u.searchParams.set("theme", "diwali");
+    u.searchParams.set("msg", "Happy Diwali");
+    u.searchParams.set("sub", "May light, joy and kindness fill your home.");
+    // optional "from" if you show it on the page
+    const nameEl = document.getElementById("sender") || document.getElementById("from");
+    const from = nameEl ? (nameEl.textContent || "").trim() : "";
+    if (from) u.searchParams.set("from", from);
+    u.searchParams.set("view", "card"); // hide buttons on card
+    window.open(u.toString(), "_blank", "noopener");
+  });
 </script>
 </body>
 </html>
