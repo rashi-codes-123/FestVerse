@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -189,6 +190,14 @@
 
   /* ---------- 2) Read params ---------- */
   const P = new URLSearchParams(location.search);
+  const heading   = document.getElementById("title");
+  const subEl     = document.getElementById("sub");
+  const fromEl    = document.getElementById("from");
+  const sigEl     = document.getElementById("sig");
+  const addNameBtn= document.getElementById("addName");
+  const shareBtn  = document.getElementById("share");
+  const previewBtn= document.getElementById("preview");
+  const pdfBtn    = document.getElementById("pdf");
   const theme = (P.get("theme") || "diwali").toLowerCase();
   const msg   = P.get("msg") || (theme==="newyear" ? "Happy New Year" : "Happy Diwali");
   const sub   = P.get("sub") || (theme==="newyear"
@@ -213,9 +222,11 @@
   }
 
   /* ---------- 4) Apply text ---------- */
-  title.textContent = msg;
-  document.getElementById("sub").textContent = sub;
-  if (from) { document.getElementById("from").textContent = from; sig.hidden = false; }
+heading.textContent = msg;
+subEl.textContent = sub;
+if (from) {
+  fromEl.textContent = from; sigEl.hidden = false; 
+}
 
   /* ---------- 5) Hide actions for recipients ---------- */
   if (view === "card") document.body.classList.add("card-view");
@@ -249,38 +260,38 @@
   })();
 
   /* ---------- 7) Add-name + Share + PDF ---------- */
-  addName.onclick = () => {
-    const n = prompt("Your name (optional):")?.trim();
-    if (!n) return;
-    document.getElementById("from").textContent = n;
-    sig.hidden = false;
-    P.set("from", n);
-    history.replaceState({}, "", location.pathname + "?" + P.toString());
-  };
+addNameBtn.onclick = () => {
+  const n = prompt("Your name (optional):")?.trim();
+  if (!n) return;
+  fromEl.textContent = n;
+  sigEl.hidden = false;
+  P.set("from", n);
+  history.replaceState({}, "", location.pathname + "?" + P.toString());
+};
 
-  share.onclick = async () => {
-    P.set("view", "card");
-    const url = location.origin + location.pathname + "?" + P.toString();
-    const data = { title: msg, text: "A greeting card for you", url };
-    if (navigator.share && (!navigator.canShare || navigator.canShare(data))) {
-      try { await navigator.share(data); } catch {}
-    } else if (navigator.clipboard && window.isSecureContext) {
-      await navigator.clipboard.writeText(url);
-      alert("Link copied!");
-    } else {
-      prompt("Copy this link:", url);
-    }
-  };
-  
+shareBtn.onclick = async () => {
+  P.set("view", "card");
+  const url = location.origin + location.pathname + "?" + P.toString();
+  const data = { title: msg, text: "A greeting card for you", url };
+  if (navigator.share && (!navigator.canShare || navigator.canShare(data))) {
+    try { await navigator.share(data); } catch {}
+  } else if (navigator.clipboard && window.isSecureContext) {
+    await navigator.clipboard.writeText(url);
+    alert("Link copied!");
+  } else {
+    prompt("Copy this link:", url);
+  }
+};
 
-  // simplest PDF: print dialog (works everywhere)
-  preview.onclick = () => {
+previewBtn.onclick = () => {
   const P2 = new URLSearchParams(P.toString());
   P2.set("view", "card"); // hide controls in preview
   const url = location.origin + location.pathname + "?" + P2.toString();
   window.open(url, "_blank", "noopener");
 };
-  pdf.onclick = () => window.print();
+
+pdfBtn.onclick = () => window.print();
+
 </script>
 </body>
 </html>
