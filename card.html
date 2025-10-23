@@ -9,6 +9,12 @@
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&family=Great+Vibes&display=swap" rel="stylesheet">
 
 <style>
+  #confetti{
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0; /* behind the card, above background */
+}
   :root{
     /* defaults (Diwali vibe) */
     --bg1:#1a1530; --bg2:#0f1324; --accent:#ffd36b; --text:#ffffffcc;
@@ -98,25 +104,13 @@
     100%{ transform:translateY(-40px) }
   }
 
-  /* ---------- New Year confetti layer (no canvas) ---------- */
-  .confetti{
-    position: fixed; inset: 0; pointer-events: none; z-index: 0; overflow: hidden;
-  }
-  .confetti i{
-    position:absolute; width:6px; height:10px; border-radius:2px;
-    opacity:.95; animation: fall linear infinite;
-  }
-  @keyframes fall{
-    from { transform: translateY(-10vh) rotate(0deg); }
-    to   { transform: translateY(110vh) rotate(360deg); }
-  }
 </style>
 </head>
 <body>
   <!-- subtle animated sparkle background -->
   <div class="bg-sparkles"></div>
   <!-- New Year confetti layer (inserted by JS when theme=newyear) -->
-  <div class="confetti" id="confetti"></div>
+ <canvas id="confetti"></canvas>
 
   <div class="card" id="card">
     <div id="art" class="art" aria-hidden="true"></div>
@@ -133,6 +127,7 @@
 </div>
   </div>
 
+  <script src="./confetti.js"></script>
 <script>
   /* ---------- 1) SVG helpers (diya / fireworks) ---------- */
   function renderDiyaSVG(){
@@ -232,32 +227,18 @@ if (from) {
   if (view === "card") document.body.classList.add("card-view");
 
   /* ---------- 6) New Year confetti (no canvas) ---------- */
-  (function setupConfetti(){
-    if (theme !== "newyear") return;
+  
+if (theme === "newyear" && window.Confetti) {
+  // one nice burst near the headline
+  Confetti.burst(innerWidth * 0.5, innerHeight * 0.33, 160);
 
-    const prefersReduced = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-    if (prefersReduced) return;
-
-    const layer = document.getElementById("confetti");
-    if (!layer) return;
-
-    const colors = ["#ffd36b","#ff6f61","#9ad1ff","#7b2cbf","#52e3c2","#ffffff"];
-    const count = 90; // light on CPU
-
-    for (let i = 0; i < count; i++) {
-      const piece = document.createElement("i");
-      piece.style.left = Math.random()*100 + "%";
-      const sz = 4 + Math.random()*6;
-      piece.style.width = sz + "px";
-      piece.style.height = (sz*1.6) + "px";
-      piece.style.background = colors[i % colors.length];
-      const dur = 4 + Math.random()*5;
-      piece.style.animationDuration = dur + "s";
-      piece.style.animationDelay = (-Math.random()*dur) + "s";
-      piece.style.transform = `translateY(${-Math.random()*100}vh) rotate(${Math.random()*360}deg)`;
-      layer.appendChild(piece);
-    }
-  })();
+  // optional: gentle ambient bursts (remove this if you want only one burst)
+  const id = setInterval(() => {
+    if (document.hidden) return;
+    Confetti.burst(Math.random() * innerWidth, innerHeight * 0.18, 80);
+  }, 1500);
+  window.addEventListener("pagehide", () => clearInterval(id));
+})();
 
   /* ---------- 7) Add-name + Share + PDF ---------- */
 addNameBtn.onclick = () => {
