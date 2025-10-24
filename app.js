@@ -35,37 +35,50 @@ document.addEventListener("DOMContentLoaded", () => {
 
   // --- SHARE feature ---
   
-const ds = document.body.dataset;  // reads data-* on <body>
-  const theme = (ds.theme || "diwali").toLowerCase();
-  const msg   = ds.msg || (theme === "newyear" ? "Happy New Year" : "Happy Diwali");
-  const sub   = ds.sub || (theme === "newyear"
-                  ? "Wishing you peace, health, and new beginnings."
-                  : "May light, joy and kindness fill your home.");
-
   shareBtn.addEventListener("click", async () => {
-    const u = new URL("card.html", location.href);     // ✅ relative for GitHub Pages
-    u.searchParams.set("theme", theme);
-    u.searchParams.set("msg", msg);
-    u.searchParams.set("sub", sub);
+    try {
+      const u = new URL(location.origin + "/card.html");
 
-    const nameEl = document.getElementById("sender") || document.getElementById("from");
-    const from = nameEl ? (nameEl.textContent || "").trim() : "";
-    if (from) u.searchParams.set("from", from);
+      if (page === "diwali") {
+        u.searchParams.set("theme", "diwali");
+        u.searchParams.set("msg", "Happy Diwali");
+        u.searchParams.set("sub", "May light, joy and kindness fill your home.");
+      } else if (page === "newyear") {
+        u.searchParams.set("theme", "newyear");
+        u.searchParams.set("msg", "Happy New Year");
+        u.searchParams.set("sub", "Wishing you peace, health, and new beginnings.");
+      }
 
-    u.searchParams.set("view", "card");
-    const url = u.toString();
+      // optional: include a name already shown on the page
+      const nameEl = document.getElementById("sender") || document.getElementById("from");
+      const from = nameEl ? (nameEl.textContent || "").trim() : "";
+      if (from) u.searchParams.set("from", from);
 
-    const shareData = { title: msg, text: "A greeting card for you", url };
-    if (navigator.share && (!navigator.canShare || navigator.canShare(shareData))) {
-      try { await navigator.share(shareData); return; } catch {}
+      // recipients see a clean card with no controls
+      u.searchParams.set("view", "card");
+      const url = u.toString();
+
+      // share/copy with fallbacks
+      const shareData = {
+        title: page === "newyear" ? "Happy New Year" : "Happy Diwali",
+        text: "A greeting card for you",
+        url,
+      };
+
+      if (navigator.share && (!navigator.canShare || navigator.canShare(shareData))) {
+        await navigator.share(shareData);
+      } else if (navigator.clipboard && window.isSecureContext) {
+        await navigator.clipboard.writeText(url);
+        alert("Link copied!");
+      } else {
+        window.prompt("Copy this link:", url);
+      }
+    } catch (e) {
+      console.error(e);
+      alert("Sharing failed: " + (e?.message || e));
     }
-    if (navigator.clipboard && window.isSecureContext) {
-      await navigator.clipboard.writeText(url);
-      alert("Link copied!");
-    } else {
-      prompt("Copy this link:", url);
-    }
-  });
+  })
+
 
 
   // --- PAGE-SPECIFIC BEHAVIOR ---
