@@ -4,20 +4,17 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width,initial-scale=1.0">
   <title>✨ FestVerse ✨ | Diwali</title>
-  <link rel="stylesheet" href="./style.css">
+  <link rel="stylesheet" href="style.css">
 </head>
 
 <body data-page="diwali">
-  <body data-theme="diwali"
-      data-msg="Happy Diwali"
-      data-sub="May light, joy and kindness fill your home.">
   <!-- Navigation Bar -->
   <header class="nav">
-    <a class="brand" href="./index.html">✨ FestVerse ✨</a>
+    <a class="brand" href="index.html">✨ FestVerse ✨</a>
     <nav>
-      <a href="./diwali.html">Diwali</a>
-      <a href="./newyear.html">New Year</a>
-      <a href="./about.html">About</a>
+      <a href="diwali.html">Diwali</a>
+      <a href="newyear.html">New Year</a>
+      <a href="about.html">About</a>
     </nav>
   </header>
 
@@ -44,21 +41,21 @@
     </section>
   </main>
 
-  <script src="./app.js"> </script>
+  <script src="app.js"> </script>
 <script>
- // Preview (Diwali)
-  document.getElementById("previewCard")?.addEventListener("click", () => {
-    const u = new URL("card.html", location.href); // relative path for GitHub Pages
-    u.searchParams.set("theme", "diwali");
-    u.searchParams.set("msg", "Happy Diwali");
-    u.searchParams.set("sub", "May light, joy and kindness fill your home.");
-    // optional "from" if you show it on the page
-    const nameEl = document.getElementById("sender") || document.getElementById("from");
-    const from = nameEl ? (nameEl.textContent || "").trim() : "";
-    if (from) u.searchParams.set("from", from);
-    u.searchParams.set("view", "card"); // hide buttons on card
-    window.open(u.toString(), "_blank", "noopener");
-  });
+  document.getElementById("previewCard").onclick = () => {
+  const u = new URL(location.origin + "/card.html");
+  u.searchParams.set("theme", "diwali");
+  u.searchParams.set("msg", "Happy Diwali");
+  u.searchParams.set("sub", "May light, joy and kindness fill your home.");
+  // if you display a name on this page and want to pass it through:
+  const nameEl = document.getElementById("sender") || document.getElementById("from");
+  const from = nameEl ? (nameEl.textContent || "").trim() : "";
+  if (from) u.searchParams.set("from", from);
+
+  u.searchParams.set("view", "card"); // hide controls in preview
+  window.open(u.toString(), "_blank", "noopener");
+};
 </script>
 </body>
 </html>
