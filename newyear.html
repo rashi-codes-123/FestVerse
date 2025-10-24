@@ -4,20 +4,17 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width,initial-scale=1.0">
   <title>✨ FestVerse ✨ | New Year</title>
-  <link rel="stylesheet" href="./style.css">
+  <link rel="stylesheet" href="style.css">
 </head>
 
 <body data-page="newyear">
-    <body data-theme="newyear"
-      data-msg="Happy New Year"
-      data-sub="Wishing you peace, health, and new beginnings.">
   <!-- Navigation Bar -->
   <header class="nav">
-    <a class="brand" href="./index.html">✨ FestVerse ✨</a>
+    <a class="brand" href="index.html">✨ FestVerse ✨</a>
     <nav>
-      <a href="./diwali.html">Diwali</a>
-      <a href="./newyear.html">New Year</a>
-      <a href="./about.html">About</a>
+      <a href="diwali.html">Diwali</a>
+      <a href="newyear.html">New Year</a>
+      <a href="about.html">About</a>
     </nav>
   </header>
 
@@ -43,20 +40,21 @@
     </section>
   </main>
 
-  <script src="./confetti.js"></script>
-  <script src="./app.js"></script>
+  <script src="confetti.js"></script>
+  <script src="app.js"></script>
   <script>
-    document.getElementById("previewCard")?.addEventListener("click", () => {
-    const u = new URL("card.html", location.href); // relative path for GitHub Pages
-    u.searchParams.set("theme", "newyear");
-    u.searchParams.set("msg", "Happy New Year");
-    u.searchParams.set("sub", "Wishing you peace, health, and new beginnings.");
-    const nameEl = document.getElementById("sender") || document.getElementById("from");
-    const from = nameEl ? (nameEl.textContent || "").trim() : "";
-    if (from) u.searchParams.set("from", from);
-    u.searchParams.set("view", "card");
-    window.open(u.toString(), "_blank", "noopener");
-  });
+    document.getElementById("previewCard").onclick = () => {
+  const u = new URL(location.origin + "/card.html");
+  u.searchParams.set("theme", "newyear");
+  u.searchParams.set("msg", "Happy New Year");
+  u.searchParams.set("sub", "Wishing you peace, health, and new beginnings.");
+  const nameEl = document.getElementById("sender") || document.getElementById("from");
+  const from = nameEl ? (nameEl.textContent || "").trim() : "";
+  if (from) u.searchParams.set("from", from);
+
+  u.searchParams.set("view", "card");
+  window.open(u.toString(), "_blank", "noopener");
+};
   </script>
 </body>
 </html>
