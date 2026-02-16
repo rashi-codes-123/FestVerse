@@ -136,56 +136,38 @@
   /* ---------- 1) SVG helpers (diya / fireworks) ---------- */
   function renderDiyaSVG(){
     return `
-    <svg viewBox="0 0 200 150" role="img" aria-label="Diya">
-      <defs>
-        <radialGradient id="flameGrad" cx="50%" cy="35%">
-          <stop offset="0%"  stop-color="#ffe7a1"/>
-          <stop offset="60%" stop-color="#ffb347"/>
-          <stop offset="100%" stop-color="rgba(255,140,58,0)"/>
-        </radialGradient>
-        <linearGradient id="bowlGrad" x1="0" x2="0" y1="0" y2="1">
-          <stop offset="0%" stop-color="#3a2a24"/>
-          <stop offset="100%" stop-color="#231712"/>
-        </linearGradient>
-        <radialGradient id="glow" cx="50%" cy="45%">
-          <stop offset="0%" stop-color="rgba(255,211,107,.55)"/>
-          <stop offset="70%" stop-color="rgba(255,140,58,.15)"/>
-          <stop offset="100%" stop-color="transparent"/>
-        </radialGradient>
-      </defs>
+    <svg viewBox="0 0 200 150" class="fireworks" aria-hidden="true">
 
-      <!-- soft halo -->
-      <ellipse cx="100" cy="35" rx="70" ry="28" fill="url(#glow)" />
-
-      <!-- bowl -->
-      <path d="M40,95 Q100,135 160,95 Q158,128 100,128 Q42,128 40,95 Z"
-            fill="url(#bowlGrad)" />
-
-      <!-- oil surface -->
-      <ellipse cx="100" cy="95" rx="60" ry="20" fill="#2b1f1a" opacity=".9"/>
-
-      <!-- flame -->
-      <ellipse class="flame" cx="100" cy="70" rx="10" ry="22" fill="url(#flameGrad)"/>
-    </svg>`;
-  }
-
-  function renderFireworksSVG(){
-    return `
-    <svg viewBox="0 0 200 150" role="img" aria-label="Fireworks">
-      <defs>
-        <radialGradient id="fw" cx="50%" cy="50%">
-          <stop offset="0%" stop-color="#ffffff"/>
-          <stop offset="60%" stop-color="#9ad1ff"/>
-          <stop offset="100%" stop-color="rgba(154,209,255,0)"/>
-        </radialGradient>
-      </defs>
-      <g transform="translate(100,75)">
-        <circle class="burst" r="10" fill="url(#fw)"></circle>
-        <circle class="burst" r="18" fill="url(#fw)"></circle>
-        <circle class="burst" r="26" fill="url(#fw)"></circle>
+      <g class="fw fw1" transform="translate(60,40)">
+        ${createSparks()}
       </g>
+  
+      <g class="fw fw2" transform="translate(140,55)">
+        ${createSparks()}
+      </g>
+  
+      <g class="fw fw3" transform="translate(100,25)">
+        ${createSparks()}
+      </g>
+
     </svg>`;
   }
+
+  function createSparks(){
+  let sparks = "";
+  const count = 18;
+
+  for(let i=0; i<count; i++){
+    const angle = (360 / count) * i;
+    sparks += `
+      <line class="spark"
+            x1="0" y1="0"
+            x2="0" y2="-35"
+            transform="rotate(${angle})" />
+    `;
+  }
+  return sparks;
+}
 
   /* ---------- 2) Read params ---------- */
   const P = new URLSearchParams(location.search);
@@ -207,9 +189,11 @@
     root.setProperty("--accent", "#9ad1ff");
     root.setProperty("--chip", "#9ad1ff");
     art.innerHTML = renderFireworksSVG();
+    art.classList.add("show-fireworks");
   } else {
     // default: diwali
-    art.innerHTML = renderDiyaSVG();
+    art.innerHTML = "";
+    art.classList.remove("show-fireworks");
   }
 
   /* ---------- 4) Apply text ---------- */
