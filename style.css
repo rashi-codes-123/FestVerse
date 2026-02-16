@@ -229,6 +229,43 @@ footer {
 .about {
   max-width: 70ch;
 }
+/* new year page animation */
+.fireworks {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  overflow: visible;
+}
+
+.spark {
+  stroke: #9ad1ff;
+  stroke-width: 2;
+  stroke-linecap: round;
+  opacity: 0;
+  transform-origin: center;
+  animation: firework 1.4s ease-out infinite;
+}
+
+.fw1 .spark { animation-delay: 0s; }
+.fw2 .spark { animation-delay: .6s; }
+.fw3 .spark { animation-delay: 1.1s; }
+
+@keyframes firework {
+  0% {
+    opacity: 1;
+    transform: scale(.2) rotate(var(--r));
+  }
+  70% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+    transform: scale(1.4) rotate(var(--r));
+  }
+}
+
 
 /* 12) ACCESSIBILITY: REDUCED MOTION SUPPORT
    If user prefers reduced motion, we turn off big transitions/animations. */
