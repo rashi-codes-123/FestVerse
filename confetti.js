@@ -41,15 +41,15 @@ const Confetti = (() => {
       particles = particles.filter(p => p.life > 0);
       requestAnimationFrame(draw);
     }
-    <canvas id="confetti"></canvas>
-    #confetti {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      pointer-events: none;
-    }
+    // <canvas id="confetti"></canvas>
+    // #confetti {
+    //   position: fixed;
+    //   top: 0;
+    //   left: 0;
+    //   width: 100%;
+    //   height: 100%;
+    //   pointer-events: none;
+    // }
   
                     
     draw();
